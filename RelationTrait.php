@@ -17,6 +17,7 @@ use yii\db\IntegrityException;
 use \yii\helpers\Inflector;
 use \yii\helpers\StringHelper;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /*
  *  add this line to your Model to enable soft delete
@@ -148,7 +149,16 @@ trait RelationTrait
         }
         return true;
     }
-
+    
+    public function validateAll($model, $skippedRelations = [])
+    {
+        $model->validate($attributes);
+        foreach ($model->getErrors() as $attribute => $errors) {
+            $result[Html::getInputId($model, $attribute)] = $errors;
+            }
+        return $result;
+    }
+    
     /**
      * Save model including all related model already loaded
      * @param array $skippedRelations
